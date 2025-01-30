@@ -1,21 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { ShoppingCart } from "lucide-react";
+import BuyBottleDialog from "./BuyBottleDialog";
 
 interface ProductCardProps {
   imageUrl?: string;
   brandName?: string;
   price?: number;
-  onQuickBuy?: () => void;
+  onQuickBuy?: (quantity: number) => void;
 }
 
 const ProductCard = ({
   imageUrl = "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=800&auto=format&fit=crop&q=60",
   brandName = "Premium Whiskey",
   price = 59.99,
-  onQuickBuy = () => console.log("Quick buy clicked"),
+  onQuickBuy = (quantity: number) =>
+    console.log(`Quick buy clicked, quantity: ${quantity}`),
 }: ProductCardProps) => {
+  const [showBuyDialog, setShowBuyDialog] = useState(false);
   return (
     <Card className="w-[300px] h-[400px] bg-white overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <CardContent className="p-0 h-full flex flex-col">
@@ -37,7 +40,7 @@ const ProductCard = ({
               ${price.toFixed(2)}
             </span>
             <Button
-              onClick={onQuickBuy}
+              onClick={() => setShowBuyDialog(true)}
               className="flex items-center gap-2"
               variant="default"
             >
@@ -47,6 +50,12 @@ const ProductCard = ({
           </div>
         </div>
       </CardContent>
+      <BuyBottleDialog
+        isOpen={showBuyDialog}
+        onClose={() => setShowBuyDialog(false)}
+        product={{ brandName, price, imageUrl }}
+        onBuy={onQuickBuy}
+      />
     </Card>
   );
 };
